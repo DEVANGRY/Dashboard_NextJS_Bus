@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import Heading from "@/components/common/Heading";
 import NavBar from "@/components/common/NavBar";
-
-const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
-});
-const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
-});
 
 export const metadata: Metadata = {
     title: "Dashboard App",
@@ -27,9 +15,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
-            >
+            <body className={`antialiased h-screen`}>
                 <Heading classHeading="h-1/7" />
                 <article className="h-6/7 flex overflow-hidden">
                     <NavBar classNavBar="w-1/4 h-full bg-gray-100 shadow-md z-10" />

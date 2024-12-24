@@ -5,13 +5,18 @@ import { Inter, Recursive } from "next/font/google";
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import {
+    Area,
+    AreaChart,
     Bar,
     BarChart,
     CartesianGrid,
     Cell,
     Pie,
     PieChart,
+    ResponsiveContainer,
+    Tooltip,
     XAxis,
+    YAxis,
 } from "recharts";
 import {
     ChartContainer,
@@ -27,63 +32,58 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { EColor, ETypeFormat, convertFormatMoney } from "@/lib/utils";
-interface IDataUser {
-    src: string;
-    nameUser: string;
-}
-interface IDataStatistical {
-    name: string;
-    numberData: number;
-    icon: string;
-    nameIcon: string;
-    compareData: number;
-}
+import { convertFormatMoney } from "@/lib/utils";
+import {
+    EArea,
+    EAreaProperties,
+    EColor,
+    ETitleTableHotBooking,
+    ETypeFormat,
+    IArea,
+    ICharHotBookingData,
+    IChartData,
+    IDataStatistical,
+    IDataTableHotBooking,
+    IDataUser,
+    IListDataArea,
+    ITotalMoneyInMonth,
+    IViewBowTooltipContent,
+    TChartAllMoneyConfig,
+    TChartConfig,
+} from "@/types/common";
 
-type TChartConfig = {
-    Contact: {
-        label: string;
-        color: string;
-    };
-    Booking: {
-        label: string;
-        color: string;
-    };
-};
-interface IChartData {
-    month: string;
-    Contact: number;
-    Booking: number;
-}
-
-interface IDataTableHotBooking {
-    name: string;
-    quantityOrder: number;
-    quantityCancel: number;
-    averageResponseTime: number;
-    totalAmount: number;
-}
-
-interface ICharHotBookingData {
-    name: string;
-    value: number;
-}
-enum ETitleTableHotBooking {
-    Name = "Name of the company",
-    QuantityOrder = "Quantity ordered",
-    QuantityCancel = "Number of Cancellations",
-    AverageResponseTime = "Average Response Time",
-    TotalAmount = "Revenue from the car station",
-}
-
-const dataListUser: IDataUser[] = [
-    { src: "asdasdasd", nameUser: "Dev" },
-    { src: "asdasdasd", nameUser: "Dev" },
-    { src: "asdasdasd", nameUser: "Dev" },
-    { src: "asdasdasd", nameUser: "Dev" },
-    { src: "asdasdasd", nameUser: "Dev" },
-    { src: "asdasdasd", nameUser: "Dev" },
+const dataListMoneyInMonth: ITotalMoneyInMonth[] = [
+    { month: "October", money: 100000000 },
+    { month: "November", money: 200000000 },
+    { month: "December", money: 350000000 },
 ];
+const totalListDataBookingInArea: IListDataArea[] = [
+    {
+        month: "9/2024",
+        hoChiMinh: 119,
+        daNang: 129,
+        haNoi: 130,
+    },
+    {
+        month: "10/2024",
+        daNang: 99,
+        hoChiMinh: 150,
+        haNoi: 178,
+    },
+    {
+        month: "11/2024",
+        daNang: 144,
+        hoChiMinh: 190,
+        haNoi: 210,
+    },
+    {
+        month: "12/2024",
+        daNang: 99,
+        hoChiMinh: 160,
+        haNoi: 199,
+    },
+];
+const dataListUser: IDataUser[] = [{ src: "asdasdasd", nameUser: "Dev" }];
 
 const listIDataStatistical: IDataStatistical[] = [
     {
@@ -115,7 +115,7 @@ const listIDataStatistical: IDataStatistical[] = [
         compareData: 5,
     },
 ];
-const TChartConfig: TChartConfig = {
+const chartConfig = {
     Contact: {
         label: "Contact",
         color: "#60a5fa ",
@@ -126,7 +126,14 @@ const TChartConfig: TChartConfig = {
     },
 } satisfies TChartConfig;
 
-const IChartData: IChartData[] = [
+const chartAllMoneyConfig = {
+    money: {
+        label: "Money",
+        color: "#60a5fa ",
+    },
+} satisfies TChartAllMoneyConfig;
+
+const chartData: IChartData[] = [
     { month: "October", Contact: 305, Booking: 200 },
     { month: "November", Contact: 237, Booking: 120 },
     { month: "December", Contact: 190, Booking: 170 },
@@ -162,8 +169,15 @@ const listDataHotBooking: IDataTableHotBooking[] = [
         totalAmount: 6000000,
     },
 ];
+
+const areas = Object.entries(EAreaProperties).map(([area, properties]) => ({
+    name: area,
+    color: properties.color,
+}));
+
 const inter = Inter({ subsets: ["latin"] });
 const recursive = Recursive({ subsets: ["latin"] });
+
 const titleTableHotBooking = Object.values(ETitleTableHotBooking);
 const colorPieChart = Object.values(EColor);
 
@@ -190,6 +204,44 @@ const Home = () => {
             0
         );
     }, [listDataHotBooking]);
+    const toPercent = (decimal: number) => `${(decimal * 100).toFixed(1)}%`;
+    const getPercent = (value: number, total: number) => {
+        const ratio = total > 0 ? value / total : 0;
+
+        return toPercent(ratio);
+    };
+    const renderTooltipContent = (o: IViewBowTooltipContent) => {
+        const { payload, label } = o;
+        const total = payload?.reduce(
+            (result, entry) => result + entry.value,
+            0
+        );
+
+        return (
+            <div className="customized-tooltip-content">
+                <p className="total">{`${label} (Total Booking: ${total})`}</p>
+                <ul className="list">
+                    {payload?.map((entry, index) => (
+                        <li
+                            key={`item-${index}`}
+                            style={{ color: entry.color }}
+                        >
+                            {`${
+                                entry.name == EArea.DANANG
+                                    ? "Đà Nẵng"
+                                    : entry.name == EArea.HANOI
+                                    ? "Hà Nội"
+                                    : "Hồ Chí Minh"
+                            } : ${entry.value}(${getPercent(
+                                entry.value,
+                                total
+                            )})`}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
     return (
         <>
             <header className="sub_header mt-5 mx-6 flex justify-between">
@@ -206,6 +258,14 @@ const Home = () => {
                     ></Image>
                 </h1>
                 <div className="group_user flex">
+                    {/* <div className="key_data border-2 bg-gray-100 rounded-md px-4  ">
+                        <h1
+                            className={`total_money ${recursive.className} text-3xl`}
+                        >
+                            {convertFormatMoney(1000000000000, ETypeFormat.Dot)}{" "}
+                            VND
+                        </h1>
+                    </div> */}
                     {dataListUser &&
                         dataListUser?.map((user: IDataUser, index: number) => {
                             if (index <= 3) {
@@ -230,9 +290,12 @@ const Home = () => {
                                 );
                             }
                         })}
-                    <Button className="add_friend ml-1" variant={"destructive"}>
+                    <Button
+                        className="add_friend ml-1 "
+                        variant={"destructive"}
+                    >
                         <UserPlus />
-                        <span>Invite</span>
+                        <span>Logout</span>
                     </Button>
                 </div>
             </header>
@@ -300,8 +363,8 @@ const Home = () => {
                     >
                         Booking completion rate
                     </h3>
-                    <ChartContainer config={TChartConfig} className="px-2 mt-5">
-                        <BarChart data={IChartData}>
+                    <ChartContainer config={chartConfig} className="px-2 mt-5">
+                        <BarChart data={chartData}>
                             <CartesianGrid vertical={false} />
                             <XAxis
                                 dataKey="month"
@@ -414,7 +477,7 @@ const Home = () => {
                         Book tickets between bus operators
                     </h3>
                     <ChartContainer
-                        config={TChartConfig}
+                        config={chartConfig}
                         className="px-1 mt-2 basis-3/4"
                     >
                         <PieChart>
@@ -446,123 +509,89 @@ const Home = () => {
                 </div>
             </div>
             {/* All Money Month*/}
-            <div className="hots_booking mx-10 flex mt-5 mb-20">
-                <div className="chart_bookingTickets flex flex-col border-2 bg-gray-100 rounded-md w-1/4 mr-10 h-72 pt-3 px-4">
+            <div className="total_money_month mx-10 flex mt-5 mb-20">
+                <div className="chart_money_month flex flex-col border-2 bg-gray-100 rounded-md w-1/4 mr-10 h-80 pt-3 px-4">
                     <h3
                         className={`title_data ${inter.className} font-semibold`}
                     >
-                        Book tickets between bus operators
+                        Earnings
                     </h3>
+                    <div className={`sub_title ${recursive.className} text-sm`}>
+                        Total Expense
+                    </div>
+                    <h2 className="total_money_data mt-1 pt-1 text-2xl text-green-500">
+                        +{convertFormatMoney(123456789, ETypeFormat.Comma)}{" "}
+                        <span className="text-black text-lg">VND</span>
+                    </h2>
+                    <p className="detail_profit mt-1">
+                        Profit is{" "}
+                        <span className="sub_detail text-blue-700">12%</span>{" "}
+                        More than last Month
+                    </p>
                     <ChartContainer
-                        config={TChartConfig}
-                        className="px-1 mt-2 basis-3/4"
+                        config={chartAllMoneyConfig}
+                        className="px-2 mt-5"
                     >
-                        <PieChart>
-                            <Pie
-                                data={dataChartHotBooking}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                fill="#8884d8"
-                                label
-                            >
-                                {dataChartHotBooking.map(
-                                    (
-                                        data: ICharHotBookingData,
-                                        index: number
-                                    ) => (
-                                        <Cell
-                                            key={`cell-${index}`}
-                                            fill={colorPieChart[index]}
-                                        />
-                                    )
-                                )}
-                            </Pie>
+                        <BarChart data={dataListMoneyInMonth}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => value.slice(0, 3)}
+                            />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
+                            <Bar
+                                dataKey="money"
+                                fill="var(--color-money)"
+                                radius={4}
+                            />
+                        </BarChart>
                     </ChartContainer>
                 </div>
-                <div className="key_data border-2 bg-gray-100 rounded-md w-2/3 h-72 px-4 pt-3 ">
-                    <div className="top_booking">
-                        <h3
-                            className={`title_data ${inter.className} font-semibold`}
+                <div className="key_data border-2 bg-gray-100 rounded-md w-2/3 h-80 px-4 pt-3 ">
+                    <h3
+                        className={`title_area ${inter.className} font-semibold`}
+                    >
+                        Areas
+                    </h3>
+                    <ResponsiveContainer
+                        width="100%"
+                        height="100%"
+                        className={`pb-5 px-1`}
+                    >
+                        <AreaChart
+                            width={500}
+                            height={400}
+                            data={totalListDataBookingInArea}
+                            stackOffset="expand"
+                            margin={{
+                                top: 10,
+                                right: 20,
+                                left: 10,
+                                bottom: 0,
+                            }}
                         >
-                            Top trending bus companies
-                        </h3>
-                        <Table className="mt-4">
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[20px]">
-                                        #
-                                    </TableHead>
-                                    {titleTableHotBooking &&
-                                        titleTableHotBooking.map(
-                                            (item: string, index: number) => {
-                                                return (
-                                                    <TableHead key={index}>
-                                                        {item}
-                                                    </TableHead>
-                                                );
-                                            }
-                                        )}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {listDataHotBooking &&
-                                    listDataHotBooking.map(
-                                        (
-                                            item: IDataTableHotBooking,
-                                            index: number
-                                        ) => {
-                                            return (
-                                                <TableRow key={index}>
-                                                    <TableCell className="font-medium">
-                                                        {index + 1}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {item.name}
-                                                    </TableCell>
-                                                    <TableCell className="text-left">
-                                                        {item.quantityOrder}
-                                                    </TableCell>
-                                                    <TableCell className="text-left">
-                                                        {item.quantityCancel}
-                                                    </TableCell>
-                                                    <TableCell className="text-left">
-                                                        {
-                                                            item.averageResponseTime
-                                                        }
-                                                        (Min)
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        {convertFormatMoney(
-                                                            item.totalAmount,
-                                                            ETypeFormat.Comma
-                                                        )}{" "}
-                                                        VNĐ
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        }
-                                    )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={5}>
-                                        Total Money
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {convertFormatMoney(
-                                            +totalAmount,
-                                            ETypeFormat.Comma
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </div>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="month" />
+                            <Tooltip content={renderTooltipContent} />
+                            <YAxis tickFormatter={toPercent} />
+                            {areas &&
+                                areas.map((item: IArea, index: number) => {
+                                    return (
+                                        <Area
+                                            type="monotone"
+                                            dataKey={item.name}
+                                            stackId="1"
+                                            stroke={item.color}
+                                            fill={item.color}
+                                            key={index}
+                                        />
+                                    );
+                                })}
+                        </AreaChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </>
