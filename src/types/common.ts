@@ -98,3 +98,18 @@ export enum ETitleTableHotBooking {
     AverageResponseTime = "Average Response Time",
     TotalAmount = "Revenue from the car station",
 }
+
+export interface IDataMoneyMonthMain {
+    month: string;
+    moneyInMonth: number;
+}
+export interface IChartRateMoneyDay {
+    name: string;
+    money: number;
+}
+
+export interface ITopMoneyBooking {
+    name: string;
+    srcImage: string;
+    money: number;
+}

@@ -463,7 +463,8 @@ const Home = () => {
                                         {convertFormatMoney(
                                             +totalAmount,
                                             ETypeFormat.Comma
-                                        )}
+                                        )}{" "}
+                                        VNĐ
                                     </TableCell>
                                 </TableRow>
                             </TableFooter>

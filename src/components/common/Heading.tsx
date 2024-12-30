@@ -19,7 +19,7 @@ const Heading = (props: Props) => {
                 <div className="search_bar flex">
                     <Input
                         className="input_search w-8/12 h-10 ml-20 drop-shadow-lg"
-                        placeholder="Search your task here ..."
+                        placeholder="Search any where here ..."
                         tabIndex={0}
                     ></Input>
                     <Button
