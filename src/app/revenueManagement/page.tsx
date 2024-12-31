@@ -225,7 +225,6 @@ const RevenueManagement = () => {
                                             ? "To Day"
                                             : "Month";
                                     }}
-                                    // wrapperStyle={{ marginLeft: "10px" }}
                                 ></Legend>
                             </PieChart>
                         </ChartContainer>

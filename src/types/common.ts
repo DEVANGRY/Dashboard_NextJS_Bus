@@ -113,3 +113,64 @@ export interface ITopMoneyBooking {
     srcImage: string;
     money: number;
 }
+
+export enum EStatusBooking {
+    WAIT = "Wait",
+    GOING = "Going",
+    DONE = "Done",
+}
+export enum EPaymentStatus {
+    PAID = "Paid",
+    UNPAID = "UnPaid",
+    PREPAYMENT = "Prepayment",
+}
+export interface IUserCustomer {
+    id?: string;
+    fullname: string;
+    pickUpLocation: string;
+    pickUpTime: Date;
+    vehicleRequest: string;
+    status: "Wait" | "Going" | "Done";
+    email: string;
+    phone: string;
+    numberCustomer: number;
+    amountPaid: number;
+    paymentStatus: "Paid" | "Unpaid" | "Prepayment";
+    note: string;
+    carBooking?: ICarBooking;
+}
+export interface ICarBooking {
+    id?: string;
+    nameCar: string;
+    carCompany: string;
+    licensePlate: string;
+    colorCar: string;
+    carPhoneNumber: string;
+}
+
+export interface ICarrierPerformance {
+    name: string;
+    tickets: number;
+    revenue: number;
+    satisfaction: number;
+}
+
+export interface IReginData {
+    name: string;
+    value: number;
+}
+
+export interface IPriceRangeData {
+    range: string;
+    count: number;
+}
+export enum EReportDate {
+    MONTH = "This Month",
+    QUARTER = "This Quarter",
+    YEAR = "This Year",
+}
+
+export interface IPopularRouter {
+    namePopular: string;
+    ticket: number;
+}

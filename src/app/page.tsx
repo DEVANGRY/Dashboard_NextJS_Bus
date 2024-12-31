@@ -204,6 +204,7 @@ const Home = () => {
             0
         );
     }, [listDataHotBooking]);
+
     const toPercent = (decimal: number) => `${(decimal * 100).toFixed(1)}%`;
     const getPercent = (value: number, total: number) => {
         const ratio = total > 0 ? value / total : 0;
@@ -258,14 +259,6 @@ const Home = () => {
                     ></Image>
                 </h1>
                 <div className="group_user flex">
-                    {/* <div className="key_data border-2 bg-gray-100 rounded-md px-4  ">
-                        <h1
-                            className={`total_money ${recursive.className} text-3xl`}
-                        >
-                            {convertFormatMoney(1000000000000, ETypeFormat.Dot)}{" "}
-                            VND
-                        </h1>
-                    </div> */}
                     {dataListUser &&
                         dataListUser?.map((user: IDataUser, index: number) => {
                             if (index <= 3) {
@@ -299,7 +292,7 @@ const Home = () => {
                     </Button>
                 </div>
             </header>
-            <div className="hots_notification mx-10 flex mt-5">
+            <div className="hots_notification mx-10 flex mt-5 ">
                 <div className="key_data border-2 bg-gray-100 rounded-md w-2/3 h-56 px-4 pt-3 ">
                     <div className="hots_notification">
                         <h3
@@ -388,7 +381,6 @@ const Home = () => {
                     </ChartContainer>
                 </div>
             </div>
-            {/* Top booking  */}
             <div className="hots_booking mx-10 flex mt-5">
                 <div className="key_data border-2 bg-gray-100 rounded-md w-2/3 h-72 px-4 pt-3 ">
                     <div className="top_booking">
@@ -509,7 +501,6 @@ const Home = () => {
                     </ChartContainer>
                 </div>
             </div>
-            {/* All Money Month*/}
             <div className="total_money_month mx-10 flex mt-5 mb-20">
                 <div className="chart_money_month flex flex-col border-2 bg-gray-100 rounded-md w-1/4 mr-10 h-80 pt-3 px-4">
                     <h3

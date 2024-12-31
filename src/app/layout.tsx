@@ -16,7 +16,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`antialiased h-screen`}>
-                <Heading classHeading="h-1/7" />
+                <Heading classHeading="h-16 md:h-[14vh] relative z-20 shadow-sm" />
                 <article className="h-6/7 flex overflow-hidden">
                     <NavBar classNavBar="w-1/4 h-full bg-gray-100 shadow-md z-10" />
                     <div className="container overflow-y-auto">{children}</div>
