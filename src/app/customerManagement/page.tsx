@@ -31,14 +31,19 @@ import {
 } from "@/components/ui/select";
 import { EStatusBooking, IUserCustomer } from "@/types/common";
 import { dataUseManager } from "../data/data";
+import { useRouter } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
 const CustomerManager = () => {
+    const router = useRouter();
     const [listDataUser, setListDataUser] = useState<IUserCustomer[]>([]);
 
     useEffect(() => {
         setListDataUser(dataUseManager);
     }, []);
 
+    const openDetailCustomer = (idUser: string | null) => {
+        router.push(`/customerManagement/${idUser}`);
+    };
     return (
         <div className={`mt-5 mx-6 ${inter.className}`}>
             <header className="header  flex justify-between">
@@ -95,7 +100,15 @@ const CustomerManager = () => {
                             listDataUser.map(
                                 (user: IUserCustomer, index: number) => {
                                     return (
-                                        <TableRow key={index}>
+                                        <TableRow
+                                            className="cursor-pointer"
+                                            key={index}
+                                            onClick={() =>
+                                                openDetailCustomer(
+                                                    user.id || null
+                                                )
+                                            }
+                                        >
                                             <TableCell className="font-medium">
                                                 {user.id}
                                             </TableCell>

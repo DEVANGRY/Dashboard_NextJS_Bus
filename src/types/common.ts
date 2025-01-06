@@ -174,3 +174,25 @@ export interface IPopularRouter {
     namePopular: string;
     ticket: number;
 }
+export interface IDataNotification {
+    id: string;
+    title: string;
+    detail: string;
+    isRead: boolean;
+    createdAt: string | Date;
+    type: "info" | "warning" | "error" | "success";
+    priority: "low" | "medium" | "high";
+}
+
+export enum EStatusTypeNotification {
+    INFO = "info",
+    WARNING = "warning",
+    ERROR = "error",
+    SUCCESS = "success",
+}
+
+export enum EPriority {
+    LOW = "low",
+    MEDIUM = "medium",
+    HIGH = "High",
+}

@@ -1,4 +1,4 @@
-import { IUserCustomer } from "@/types/common";
+import { IDataNotification, IUserCustomer } from "@/types/common";
 
 export const dataUseManager: IUserCustomer[] = [
     {
@@ -352,5 +352,97 @@ export const dataUseManager: IUserCustomer[] = [
             colorCar: "Blue",
             carPhoneNumber: "+84982316562",
         },
+    },
+];
+export const listNotifications: IDataNotification[] = [
+    {
+        id: "1",
+        title: "New User Registration",
+        detail: "A new user has registered on your platform.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "info",
+        priority: "medium",
+    },
+    {
+        id: "2",
+        title: "Payment Received",
+        detail: "You have successfully received a payment of 500 USD.",
+        isRead: true,
+        createdAt: new Date(),
+        type: "success",
+        priority: "high",
+    },
+    {
+        id: "3",
+        title: "System Maintenance",
+        detail: "The system will be down for maintenance at midnight.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "warning",
+        priority: "high",
+    },
+    {
+        id: "4",
+        title: "Password Change Alert",
+        detail: "Your password was successfully changed. If this wasn’t you, please contact support immediately.",
+        isRead: true,
+        createdAt: new Date(),
+        type: "info",
+        priority: "low",
+    },
+    {
+        id: "5",
+        title: "New Comment on Your Post",
+        detail: "Someone has commented on your latest post.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "info",
+        priority: "medium",
+    },
+    {
+        id: "6",
+        title: "Login Attempt from New Device",
+        detail: "We noticed a login attempt from an unfamiliar device. If this was not you, please change your password.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "warning",
+        priority: "high",
+    },
+    {
+        id: "7",
+        title: "Subscription Renewal Reminder",
+        detail: "Your subscription will expire in 3 days. Please renew it to avoid service interruptions.",
+        isRead: true,
+        createdAt: new Date(),
+        type: "info",
+        priority: "medium",
+    },
+    {
+        id: "8",
+        title: "Error in Data Processing",
+        detail: "An error occurred while processing your data. Please try again later.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "error",
+        priority: "high",
+    },
+    {
+        id: "9",
+        title: "Weekly Report Available",
+        detail: "Your weekly report is ready. Click here to view it.",
+        isRead: true,
+        createdAt: new Date(),
+        type: "info",
+        priority: "low",
+    },
+    {
+        id: "10",
+        title: "Account Locked",
+        detail: "Your account has been locked due to multiple failed login attempts. Please reset your password.",
+        isRead: false,
+        createdAt: new Date(),
+        type: "error",
+        priority: "high",
     },
 ];
